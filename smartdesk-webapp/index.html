@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartDesk Feedback</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 20px;
+      background: #f4f4f4;
+      border-radius: 8px;
+    }
+    input, textarea {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 15px;
+      background: #0078D4;
+      color: white;
+      border: none;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    #response {
+      margin-top: 20px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h2>Submit Feedback</h2>
+  <form id="feedback-form">
+    <input name="name" placeholder="Your Name" required />
+    <input name="email" type="email" placeholder="Your Email" required />
+    <textarea name="message" placeholder="Your Message" required></textarea>
+    <button type="submit">Send</button>
+  </form>
+  <p id="response"></p>
+
+  <script>
+    const form = document.getElementById('feedback-form');
+    const responseEl = document.getElementById('response');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      responseEl.textContent = "Submitting...";
+
+      const payload = {
+        name: form.name.value,
+        email: form.email.value,
+        message: form.message.value
+      };
+
+      try {
+        const res = await fetch('https://smartdesk-functionapp.azurewebsites.net/api/SubmitFeedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const text = await res.text();
+        responseEl.textContent = text;
+        form.reset();
+      } catch (err) {
+        responseEl.textContent = "Submission failed. Please try again.";
+      }
+    });
+  </script>
+</body>
+</html>
+
