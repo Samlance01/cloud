@@ -4,15 +4,20 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from root (index.html, etc.)
-app.use(express.static(path.join(__dirname, '/')));
+// Serve static files (CSS, JS, images if any)
+app.use(express.static(path.join(__dirname)));
 
-// For root route
+// Main route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Fallback error handler (optional but helpful for debugging)
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
+app.listen(PORT, () => {
+  console.log(`✅ Server is running on port ${PORT}`);
+});
